@@ -1,2 +1,2 @@
-karuta-fileserver
+Karuta Fileserver
 =================
