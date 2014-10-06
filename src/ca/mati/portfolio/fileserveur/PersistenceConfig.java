@@ -15,6 +15,7 @@
 
 package ca.mati.portfolio.fileserveur;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class PersistenceConfig {
 
 	public PersistenceConfig(String path, String newPersistenceType) throws IOException {
 		persistenceType = newPersistenceType;
-		path = path.replaceFirst("/$", "_config/");
+		path = path.replaceFirst(File.separator+"$", "_config"+File.separator);
 		PERSISTENCE_CONFIG_FILE = path+"persistence_config.properties";
 		logger.info("Persistence location: "+PERSISTENCE_CONFIG_FILE);
 		this.setPersistenceConfigFromPropertiesFile();
