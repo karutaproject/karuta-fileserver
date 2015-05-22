@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>karuta</groupId>
   <artifactId>karuta-fileserver</artifactId>
-  <version>1.0.0.1</version>
+  <version>1.0.1.2</version>
   <packaging>war</packaging>
-  <name>karuta-fileserver</name>
+  <name>karuta-backend</name>
   <dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -73,6 +73,7 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.3</version>
           <configuration>
+						<warName>karuta-fileserver</warName>
             <webResources>
               <resource>
                 <directory>WebContent</directory>

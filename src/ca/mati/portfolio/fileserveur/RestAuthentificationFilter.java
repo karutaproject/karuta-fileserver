@@ -63,7 +63,7 @@ public class RestAuthentificationFilter implements Filter {
 		System.out.println("info recuperees :  " + dbName );
 
 		String authHeader = requestHttp.getHeader("Authorization");
-		System.out.println("authHeader :  «" + authHeader + "»");
+		System.out.println("authHeader :  '" + authHeader + "'");
 
 		logger.log(Level.INFO, "Basic Authentication Authorization - authHeader=" + authHeader );
 
@@ -114,8 +114,8 @@ public class RestAuthentificationFilter implements Filter {
 	}
 
 	/**
-	 * Le filtre de contrôle d'identification ne
-	 * nécessite pas d'initialisation
+	 * Le filtre de controle d'identification ne
+	 * necessite pas d'initialisation
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) {
@@ -123,8 +123,8 @@ public class RestAuthentificationFilter implements Filter {
 
 
 	/**
-	 * Le filtre de contrôle d'identification ne
-	 * nécessite pas rangement en fin d'utilisation.
+	 * Le filtre de controle d'identification ne
+	 * necessite pas d'initialisation
 	 */
 	@Override
 	public void destroy() {

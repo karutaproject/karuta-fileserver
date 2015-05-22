@@ -34,6 +34,7 @@ public class PersistenceConfig {
 
 	public PersistenceConfig(String path, String newPersistenceType) throws IOException {
 		persistenceType = newPersistenceType;
+		baseWebapps = path.replaceFirst(File.separator+"$", "_files");
 		path = path.replaceFirst(File.separator+"$", "_config"+File.separator);
 		PERSISTENCE_CONFIG_FILE = path+"persistence_config.properties";
 		logger.info("Persistence location: "+PERSISTENCE_CONFIG_FILE);
@@ -45,6 +46,7 @@ public class PersistenceConfig {
 		return persistenceType;
 	}
 
+	private String baseWebapps = null;
 	private String repoName = null;
 	private void setRepoName(String newRepoName) {
 		this.repoName = newRepoName;
@@ -97,10 +99,14 @@ public class PersistenceConfig {
 		}
 	    setRepoName(prop.getProperty(getPersistenceType() + ".name"));
 	    if (TRACE) System.out.println(getPersistenceType() + ".name: " + getRepoName());
-	    String repoUrlRoot = prop.getProperty(getPersistenceType() + ".url");
-	    if (TRACE) System.out.println(getPersistenceType() + ".url: " + repoUrlRoot);
-	    // Build the repo URL adding "/" and the name of the repo
-	    String completeRepoUrl = repoUrlRoot + "/" + getRepoName();
+	    String repoUrlRoot = prop.getProperty(getPersistenceType() + ".dir");
+	    if (TRACE) System.out.println(getPersistenceType() + ".dir: " + repoUrlRoot);
+	    // If not directory not set, put it under {webapps}/{application}_files
+	    String completeRepoUrl = "";
+	    if( repoUrlRoot == null || "".equals(repoUrlRoot) )
+	    	completeRepoUrl = baseWebapps + File.separator + getRepoName();
+	    else
+	    	completeRepoUrl = repoUrlRoot + File.separator + getRepoName();
 	    setRepoUrl(completeRepoUrl);
 	    if (TRACE) System.out.println("Complete repo Url: " + getRepoUrl());
 	    System.out.println("ATTENTION! - Don't forget to create all the folders along the path: " + getRepoUrl());

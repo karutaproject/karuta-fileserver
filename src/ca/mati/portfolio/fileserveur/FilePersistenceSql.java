@@ -178,7 +178,7 @@ public class FilePersistenceSql implements ApiFilePersistence {
 			// sends the statement to the database server
 			int row = statement.executeUpdate();
 			if (row > 0) {
-				message = "Resource: " +  fileUuid + " marked Ç deleted È into the database";
+				message = "Resource: " +  fileUuid + " marked 'deleted' into the database";
 				System.out.println(message);
 			}
 		} catch (SQLException ex) {
