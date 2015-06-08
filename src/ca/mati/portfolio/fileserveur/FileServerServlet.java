@@ -15,6 +15,7 @@
 
 package ca.mati.portfolio.fileserveur;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,6 +46,7 @@ public class FileServerServlet extends HttpServlet
 	final Logger logger = LoggerFactory.getLogger(FileServerServlet.class);
 
 	private String serverType;
+	private String configPath;
 
 	public static final boolean TRACE = true;
 
@@ -58,6 +60,20 @@ public class FileServerServlet extends HttpServlet
 	{
 		logger.info("FileServerServlet starting");
 		serverType = getServletConfig().getServletContext().getInitParameter("serverType");
+		String servName = getServletConfig().getServletContext().getContextPath();
+		String path = getServletConfig().getServletContext().getRealPath("/");
+		File base = new File(path+"../..");
+		String tomcatRoot;
+		try
+		{
+			tomcatRoot = base.getCanonicalPath();
+			configPath = tomcatRoot + servName +"_config"+File.separatorChar;
+			logger.info("FileServerServlet configpath @ "+configPath);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -68,10 +84,10 @@ public class FileServerServlet extends HttpServlet
 
 		try
 		{
-			String path = getServletContext().getRealPath("/");
+//			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
-			ApiFilePersistence filePersistence = factory.createFilePersistence(path, app);
+			ApiFilePersistence filePersistence = factory.createFilePersistence(configPath, app);
 
 			String message;
 			if ( filePersistence.isFileDeleted(uuid) ) {
@@ -101,10 +117,10 @@ public class FileServerServlet extends HttpServlet
 
 		try
 		{
-			String path = getServletContext().getRealPath("/");
+//			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
-			ApiFilePersistence filePersistence = factory.createFilePersistence(path, app);
+			ApiFilePersistence filePersistence = factory.createFilePersistence(configPath, app);
 
 			InputStream inputStream = filePersistence.getFileInputStream(uuid);
 			int fileLength = inputStream.available();
@@ -152,10 +168,10 @@ public class FileServerServlet extends HttpServlet
 
 		try
 		{
-			String path = getServletContext().getRealPath("/");
+//			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
-			ApiFilePersistence filePersistence = factory.createFilePersistence(path ,app);
+			ApiFilePersistence filePersistence = factory.createFilePersistence(configPath ,app);
 
 			// get the upload file part from multipart request
 			ServletInputStream inputStream = request.getInputStream();
@@ -199,11 +215,11 @@ public class FileServerServlet extends HttpServlet
 
 		try
 		{
-			String path = getServletContext().getRealPath("/");
+//			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
-			logger.debug("APP: "+app+" "+path);
-			ApiFilePersistence filePersistence = factory.createFilePersistence(path, app);
+			logger.debug("APP: "+app+" "+configPath);
+			ApiFilePersistence filePersistence = factory.createFilePersistence(configPath, app);
 
 			// get input stream of the upload file
 			String doCopy = request.getParameter("copy");
