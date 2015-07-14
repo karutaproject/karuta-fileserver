@@ -32,9 +32,9 @@ public class PersistenceConfig {
 
 	public static String PERSISTENCE_CONFIG_FILE = "";
 
-	public PersistenceConfig(String path, String newPersistenceType) throws IOException {
+	public PersistenceConfig(String tomcatFolder, String path, String newPersistenceType) throws IOException {
 		persistenceType = newPersistenceType;
-//		baseWebapps = path.replaceFirst(File.separator+"$", "_files");
+		baseFolder = tomcatFolder;
 //		path = path.replaceFirst(File.separator+"$", "_config"+File.separator);
 		PERSISTENCE_CONFIG_FILE = path+"persistence_config.properties";
 		logger.info("Persistence location: "+PERSISTENCE_CONFIG_FILE);
@@ -46,7 +46,7 @@ public class PersistenceConfig {
 		return persistenceType;
 	}
 
-	private String baseWebapps = null;
+	private String baseFolder = null;
 	private String repoName = null;
 	private void setRepoName(String newRepoName) {
 		this.repoName = newRepoName;
@@ -101,10 +101,10 @@ public class PersistenceConfig {
 	    if (TRACE) System.out.println(getPersistenceType() + ".name: " + getRepoName());
 	    String repoUrlRoot = prop.getProperty(getPersistenceType() + ".dir");
 	    if (TRACE) System.out.println(getPersistenceType() + ".dir: " + repoUrlRoot);
-	    // If not directory not set, put it under {webapps}/{application}_files
+	    // If not directory not set, put it under {tomcat_root}/{fs.name}
 	    String completeRepoUrl = "";
 	    if( repoUrlRoot == null || "".equals(repoUrlRoot) )
-	    	completeRepoUrl = baseWebapps + File.separator + getRepoName();
+	    	completeRepoUrl = baseFolder + File.separator + getRepoName();
 	    else
 	    	completeRepoUrl = repoUrlRoot + File.separator + getRepoName();
 	    setRepoUrl(completeRepoUrl);

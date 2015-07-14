@@ -38,8 +38,8 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		return persistenceConfig;
 	}
 
-	public FilePersistenceFs( String path, String app ) throws IOException {
-		persistenceConfig = new PersistenceConfig(path, "fs");
+	public FilePersistenceFs( String base, String path, String app ) throws IOException {
+		persistenceConfig = new PersistenceConfig(base, path, "fs");
 		application = app;
 		/// Ensure folder exists, create directory otherwise
 		String location = persistenceConfig.getRepoUrl() + application;
