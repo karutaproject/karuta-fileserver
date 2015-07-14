@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 public class PersistenceConfig {
 	final Logger logger = LoggerFactory.getLogger(PersistenceConfig.class);
 
-	public static final boolean TRACE = true;
-
 	public static String PERSISTENCE_CONFIG_FILE = "";
 
 	public PersistenceConfig(String tomcatFolder, String path, String newPersistenceType) throws IOException {
@@ -87,20 +85,17 @@ public class PersistenceConfig {
 			is = new FileInputStream(fileName);
 		} catch (FileNotFoundException e) {
 			String errorMessage = "ERROR - persistence_config.properties file not found";
-			if (TRACE) System.out.println(errorMessage);
 			throw new FileNotFoundException(errorMessage);
 		}
 	    try {
 			prop.load(is);
 		} catch (IOException e) {
 			String errorMessage = "ERROR - Problem attempting to read persistence_config.properties file";
-			if (TRACE) System.out.println(errorMessage);
+			logger.error("Couldn't read configuration file at: "+PERSISTENCE_CONFIG_FILE);
 			throw new IOException(errorMessage);
 		}
 	    setRepoName(prop.getProperty(getPersistenceType() + ".name"));
-	    if (TRACE) System.out.println(getPersistenceType() + ".name: " + getRepoName());
 	    String repoUrlRoot = prop.getProperty(getPersistenceType() + ".dir");
-	    if (TRACE) System.out.println(getPersistenceType() + ".dir: " + repoUrlRoot);
 	    // If not directory not set, put it under {tomcat_root}/{fs.name}
 	    String completeRepoUrl = "";
 	    if( repoUrlRoot == null || "".equals(repoUrlRoot) )
@@ -108,12 +103,8 @@ public class PersistenceConfig {
 	    else
 	    	completeRepoUrl = repoUrlRoot + File.separator + getRepoName();
 	    setRepoUrl(completeRepoUrl);
-	    if (TRACE) System.out.println("Complete repo Url: " + getRepoUrl());
-	    System.out.println("ATTENTION! - Don't forget to create all the folders along the path: " + getRepoUrl());
 	    setUser(prop.getProperty(getPersistenceType() + ".user.id"));
-	    if (TRACE) System.out.println(getPersistenceType() + ".user.id: " + getUser());
 	    setPassword(prop.getProperty(getPersistenceType() + ".user.password"));
-	    if (TRACE) System.out.println(getPersistenceType() + ".user.password: " + getPassword());
 	}
 
 }
