@@ -91,6 +91,7 @@ public class FileServerServlet extends HttpServlet
 
 			String message;
 			if ( filePersistence.isFileDeleted(uuid) ) {
+				response.setStatus(400);
 				message = "400 - ERROR - resource: " + uuid + " is already deleted";
 			} else {
 				message = "200 - " + filePersistence.deleteFile(uuid);
@@ -102,6 +103,7 @@ public class FileServerServlet extends HttpServlet
 			request.getInputStream().close();
 
 		} catch (Exception e) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR: " + e.getMessage());
 		}
 	}
@@ -144,10 +146,13 @@ public class FileServerServlet extends HttpServlet
 			outStream.close();
 			inputStream.close();
 		} catch (IOException exIO) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR - IO Error: " + exIO.getMessage());
 		} catch (SQLException exSql ) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR - SQL Error: " + exSql.getMessage());
 		} catch (Exception e) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR: " + e.getMessage());
 		}
 		finally
@@ -181,8 +186,10 @@ public class FileServerServlet extends HttpServlet
 			PrintWriter out = response.getWriter();
 			out.println("");
 		} catch (SQLException exSql) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR - IO Error: " + exSql.getMessage());
 		} catch (Exception e) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR: " + e.getMessage());
 		}
 
@@ -239,8 +246,10 @@ public class FileServerServlet extends HttpServlet
 			uuid = filePersistence.saveFile(uuid, inputStream);
 
 		} catch (SQLException exSql) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR - IO Error: " + exSql.getMessage());
 		} catch (Exception e) {
+			response.setStatus(500);
 			response.getWriter().print("500 - ERROR: " + e.getMessage());
 		}
 
