@@ -38,9 +38,9 @@ public class FilePersistenceSql implements ApiFilePersistence {
 		return persistenceConfig;
 	}
 
-	public FilePersistenceSql( String path, String app ) throws IOException {
+	public FilePersistenceSql( String base, String path, String app ) throws IOException {
 		application = app;
-		persistenceConfig = new PersistenceConfig(path, "sql");
+		persistenceConfig = new PersistenceConfig(base, path, "sql");
 	}
 
 	@Override
