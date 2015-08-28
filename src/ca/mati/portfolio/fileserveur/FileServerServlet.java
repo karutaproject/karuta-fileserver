@@ -122,7 +122,9 @@ public class FileServerServlet extends HttpServlet
 		String thumbvar=null;
 		if( split.length > 1 )
 			thumbvar = split[1];
-		boolean isThumbnail = new Boolean(thumbvar);
+		boolean isThumbnail = false;
+		if("thumb".equals(thumbvar))
+		isThumbnail = true;
 
 		try
 		{

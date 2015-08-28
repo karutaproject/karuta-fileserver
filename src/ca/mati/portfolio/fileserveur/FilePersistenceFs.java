@@ -31,6 +31,7 @@ import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODExcelConverterTh
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODHtmlConverterThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODPowerpointConverterThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODWordConverterThumbnailer;
+import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.NativeImageThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.OpenOfficeThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.PDFBoxThumbnailer;
 
@@ -63,6 +64,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 
 	public void prepareThumbnailer( ThumbnailerManager thumbnailer )
 	{
+		thumbnailer.registerThumbnailer(new NativeImageThumbnailer());
 		thumbnailer.registerThumbnailer(new OpenOfficeThumbnailer());
 		thumbnailer.registerThumbnailer(new PDFBoxThumbnailer());
 		
@@ -90,9 +92,9 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		
 		String filePath;
 		if( thumbnail )
-			filePath = getPersistenceConfig().getRepoUrl() + application + "_thumb/" + fileUuid;
+			filePath = getPersistenceConfig().getRepoUrl() + application + "_thumb"+ File.separatorChar + fileUuid;
 		else
-			filePath = getPersistenceConfig().getRepoUrl() + application + "/" + fileUuid;
+			filePath = getPersistenceConfig().getRepoUrl() + application + File.separatorChar + fileUuid;
 		
 		File file = new File(filePath);
 		if(!file.exists()){
@@ -125,8 +127,9 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		}
 		//*/
 
-		String filePath = getPersistenceConfig().getRepoUrl() + application +"/" + fileUuid;
-		String thumbFilename = getPersistenceConfig().getRepoUrl() + application +"_thumb/" + fileUuid;
+		String filePath = getPersistenceConfig().getRepoUrl() + application +File.separatorChar + fileUuid;
+		String thumbFolder = getPersistenceConfig().getRepoUrl() + application +"_thumb";
+		String thumbFilename = thumbFolder + File.separatorChar + fileUuid;
 
 		File saveFile = new File(filePath);
 		if( !saveFile.exists() )
@@ -153,7 +156,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 			//// Thumbnailer configuration
 			ThumbnailerManager thumbnailer = new ThumbnailerManager();
 			prepareThumbnailer(thumbnailer);
-			thumbnailer.setThumbnailFolder("thumbs/");	// FIXME
+			thumbnailer.setThumbnailFolder(thumbFolder);
 			
 			//// Write thumbnail
 			File file = new File(filePath);
