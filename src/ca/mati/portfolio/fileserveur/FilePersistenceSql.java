@@ -44,7 +44,7 @@ public class FilePersistenceSql implements ApiFilePersistence {
 	}
 
 	@Override
-	public InputStream getFileInputStream(String fileUuid) throws SQLException {
+	public InputStream getFileInputStream(String fileUuid, boolean thumbnail) throws SQLException {
 
 		Connection connection = null; // connection to the database
 

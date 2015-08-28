@@ -117,6 +117,15 @@ public class FileServerServlet extends HttpServlet
 		if( "".equals(uuid) )
 			return;
 
+		String split[] = uuid.split("/");
+		uuid = split[0];
+		String thumbvar=null;
+		if( split.length > 1 )
+			thumbvar = split[1];
+		boolean isThumbnail = false;
+		if("thumb".equals(thumbvar))
+		isThumbnail = true;
+
 		try
 		{
 //			String path = getServletContext().getRealPath("/");
@@ -124,7 +133,7 @@ public class FileServerServlet extends HttpServlet
 			String app = request.getHeader("app");
 			ApiFilePersistence filePersistence = factory.createFilePersistence(baseFolder, configPath, app);
 
-			InputStream inputStream = filePersistence.getFileInputStream(uuid);
+			InputStream inputStream = filePersistence.getFileInputStream(uuid, isThumbnail);
 			int fileLength = inputStream.available();
 			if (TRACE) System.out.println("fileLength = " + fileLength);
 
@@ -234,7 +243,7 @@ public class FileServerServlet extends HttpServlet
 			if( doCopy != null )
 			{
 				/// Read file directly
-				inputStream = filePersistence.getFileInputStream(uuid);
+				inputStream = filePersistence.getFileInputStream(uuid, false);
 
 				/// Generate a new legit uuid
 				uuid = UUID.randomUUID().toString();
