@@ -154,6 +154,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 			if (TRACE) System.out.println("File written to: " + saveFile.getAbsolutePath());
 
 			//// Thumbnailer configuration
+			/*
 			ThumbnailerManager thumbnailer = new ThumbnailerManager();
 			prepareThumbnailer(thumbnailer);
 			thumbnailer.setThumbnailFolder(thumbFolder);
@@ -162,6 +163,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 			File file = new File(filePath);
 			File thumbFile = new File(thumbFilename);
 			thumbnailer.generateThumbnail(file, thumbFile);
+			//*/
 
 		} catch (Exception e){
 			if (TRACE) System.out.println(e.toString());
