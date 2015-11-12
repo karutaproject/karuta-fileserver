@@ -26,7 +26,7 @@ public interface ApiFilePersistence {
 
 	public abstract PersistenceConfig getPersistenceConfig();
 
-	public abstract InputStream getFileInputStream(String fileUuid) throws Exception;
+	public abstract InputStream getFileInputStream(String fileUuid, boolean thumbnail) throws Exception;
 
 	public abstract String saveFile(String fileUuid, InputStream inputStream) throws Exception;
 
