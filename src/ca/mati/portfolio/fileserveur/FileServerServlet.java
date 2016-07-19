@@ -177,23 +177,46 @@ public class FileServerServlet extends HttpServlet
 		String uuid = request.getPathInfo();
 		uuid = uuid.substring(1);
 
+		/// Ensure file id is a uuid
 		if( "".equals(uuid) )
-			return;
+			uuid = UUID.randomUUID().toString();
+		else
+			try
+			{
+				UUID test = UUID.fromString(uuid);
+				uuid = test.toString();
+			}
+			catch( IllegalArgumentException e )
+			{
+				// Invalid create a new one
+				uuid = UUID.randomUUID().toString();
+			}
 
 		try
 		{
 //			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
-			ApiFilePersistence filePersistence = factory.createFilePersistence(baseFolder, configPath ,app);
+			logger.debug("APP: "+app+" "+configPath);
+			ApiFilePersistence filePersistence = factory.createFilePersistence(baseFolder, configPath, app);
 
-			// get the upload file part from multipart request
-			ServletInputStream inputStream = request.getInputStream();
+			// get input stream of the upload file
+			String doCopy = request.getParameter("copy");
+			InputStream inputStream = null;
+			if( doCopy != null )
+			{
+				/// Read file directly
+				inputStream = filePersistence.getFileInputStream(uuid, false);
 
-			uuid = filePersistence.updateFile(uuid, inputStream);
+				/// Generate a new legit uuid
+				uuid = UUID.randomUUID().toString();
+			}
+			else
+				inputStream = request.getInputStream();
 
-			PrintWriter out = response.getWriter();
-			out.println("");
+			logger.debug("Input stream for: "+uuid);
+			uuid = filePersistence.saveFile(uuid, inputStream);
+
 		} catch (SQLException exSql) {
 			response.setStatus(500);
 			response.getWriter().print("500 - ERROR - IO Error: " + exSql.getMessage());
