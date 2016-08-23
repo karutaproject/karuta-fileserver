@@ -192,7 +192,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 	@Override
 	public boolean isFileDeleted(String fileUuid) throws IOException
 	{
-		String filePath = getPersistenceConfig().getRepoUrl() + application + "/" + fileUuid;
+		String filePath = getPersistenceConfig().getRepoUrl() + application + File.separatorChar + fileUuid;
 		if (TRACE) System.out.println("FilePersistenceFs 233 - isFileDeleted : " + filePath);
 		File file = new File(filePath);
 		if(file.exists()){
