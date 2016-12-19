@@ -42,6 +42,13 @@
     	<artifactId>slf4j-api</artifactId>
     	<version>1.7.7</version>
     </dependency>
+		<dependency>
+			<groupId>de.uni_siegen.wineme.come_in</groupId>
+			<artifactId>thumbnailer-standalone</artifactId>
+			<version>0.7-PREVIEW</version>
+		      <scope>system</scope>
+		      <systemPath>${basedir}/WebContent/WEB-INF/lib/javathumbnailer-standalone-0.7-PREVIEW.jar</systemPath>
+		</dependency>
   </dependencies>
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
