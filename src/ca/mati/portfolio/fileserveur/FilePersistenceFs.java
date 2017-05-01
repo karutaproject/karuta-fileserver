@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
 import de.uni_siegen.wineme.come_in.thumbnailer.ThumbnailerManager;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODExcelConverterThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODHtmlConverterThumbnailer;
@@ -34,11 +35,12 @@ import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.JODWordConverterThu
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.NativeImageThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.OpenOfficeThumbnailer;
 import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.PDFBoxThumbnailer;
+//*/
 
 public class FilePersistenceFs implements ApiFilePersistence {
 
 	public static final boolean TRACE = true;
-	private static ThumbnailerManager thumbnailer;
+//	private static ThumbnailerManager thumbnailer;
 	
 	static final String AUXILIARY_FILE_ID_NAME = "file_id_name.txt";
 
@@ -62,6 +64,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 			file.mkdirs();
 	}
 
+	/*
 	public void prepareThumbnailer( ThumbnailerManager thumbnailer )
 	{
 		thumbnailer.registerThumbnailer(new NativeImageThumbnailer());
@@ -79,6 +82,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		
 		thumbnailer.setImageSize(160, 120, 0);
 	}
+	//*/
 	
 	@Override
 	public InputStream getFileInputStream(String fileUuid, boolean thumbnail) throws SQLException, IOException
