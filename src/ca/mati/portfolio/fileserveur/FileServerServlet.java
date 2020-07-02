@@ -49,7 +49,7 @@ public class FileServerServlet extends HttpServlet
 	private String configPath;
 	private String baseFolder;
 
-	public static final boolean TRACE = true;
+	public static final boolean TRACE = false;
 
 	private static final long serialVersionUID = 1L;
 
@@ -126,6 +126,7 @@ public class FileServerServlet extends HttpServlet
 		if("thumb".equals(thumbvar))
 		isThumbnail = true;
 
+		OutputStream outStream = response.getOutputStream();
 		try
 		{
 //			String path = getServletContext().getRealPath("/");
@@ -135,12 +136,11 @@ public class FileServerServlet extends HttpServlet
 
 			InputStream inputStream = filePersistence.getFileInputStream(uuid, isThumbnail);
 			int fileLength = inputStream.available();
-			if (TRACE) System.out.println("fileLength = " + fileLength);
+			if (TRACE) logger.info("fileLength = " + fileLength);
 
 			response.setContentLength(fileLength);
 
 			// write the file to the client
-			OutputStream outStream = response.getOutputStream();
 
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead = -1;
@@ -150,23 +150,26 @@ public class FileServerServlet extends HttpServlet
 				outStream.write(buffer, 0, bytesRead);
 				total += bytesRead;
 			}
-			System.out.println("Total = " + total);
+			logger.info("Total = " + total);
 			outStream.flush();
 			outStream.close();
 			inputStream.close();
 		} catch (IOException exIO) {
 			response.setStatus(500);
-			response.getWriter().print("500 - ERROR - IO Error: " + exIO.getMessage());
+			PrintWriter writer = new PrintWriter(outStream);
+			writer.print("500 - ERROR - IO Error: " + exIO.getMessage());
 		} catch (SQLException exSql ) {
 			response.setStatus(500);
-			response.getWriter().print("500 - ERROR - SQL Error: " + exSql.getMessage());
+			PrintWriter writer = new PrintWriter(outStream);
+			writer.print("500 - ERROR - SQL Error: " + exSql.getMessage());
 		} catch (Exception e) {
 			response.setStatus(500);
-			response.getWriter().print("500 - ERROR: " + e.getMessage());
+			PrintWriter writer = new PrintWriter(outStream);
+			writer.print("500 - ERROR: " + e.getMessage());
 		}
 		finally
 		{
-			response.getOutputStream().close();
+			outStream.close();
 			request.getInputStream().close();
 		}
 	}
@@ -281,6 +284,7 @@ public class FileServerServlet extends HttpServlet
 			response.setStatus(500);
 			response.getWriter().print("500 - ERROR - IO Error: " + exSql.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.setStatus(500);
 			response.getWriter().print("500 - ERROR: " + e.getMessage());
 		}

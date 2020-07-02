@@ -39,7 +39,7 @@ import de.uni_siegen.wineme.come_in.thumbnailer.thumbnailers.PDFBoxThumbnailer;
 
 public class FilePersistenceFs implements ApiFilePersistence {
 
-	public static final boolean TRACE = true;
+	public static final boolean TRACE = false;
 //	private static ThumbnailerManager thumbnailer;
 	
 	static final String AUXILIARY_FILE_ID_NAME = "file_id_name.txt";
@@ -100,6 +100,8 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		else
 			filePath = getPersistenceConfig().getRepoUrl() + application + File.separatorChar + fileUuid;
 		
+		logger.debug("Fetching file @ "+filePath);
+		
 		File file = new File(filePath);
 		if(!file.exists()){
 			throw new IOException("File doesn't exists on server.");
@@ -114,7 +116,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 	}
 
 	@Override
-	public String saveFile(String fileUuid, InputStream inputStream) throws Exception
+	public String saveFile(String fileUuid, InputStream inputStream)
 	{
 		// message will be sent back to client
 		if ( (null == fileUuid)  || (fileUuid.length() == 0)  ) {
@@ -135,27 +137,36 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		String thumbFolder = getPersistenceConfig().getRepoUrl() + application +"_thumb";
 		String thumbFilename = thumbFolder + File.separatorChar + fileUuid;
 
-		File saveFile = new File(filePath);
-		if( !saveFile.exists() )
-		  saveFile.createNewFile();
-
-		// opens an output stream for writing file
-		FileOutputStream outputStream = new FileOutputStream(saveFile);
-
+		logger.debug("Writing file to: "+filePath);
+		
 		try {
+			File saveFile = new File(filePath);
+			if( !saveFile.exists() )
+			{
+				logger.debug("Creating file: "+filePath);
+				saveFile.createNewFile();
+			}
+			
+			// opens an output stream for writing file
+			FileOutputStream outputStream = new FileOutputStream(saveFile);
+			
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead = -1;
-			if (TRACE) System.out.println("Receiving data...");
+			if (TRACE) logger.debug("Receiving data...");
+			
+			logger.debug("Receiving data");
 
 			while ((bytesRead = inputStream.read(buffer)) != -1) {
 				outputStream.write(buffer, 0, bytesRead);
 			}
 
-			if (TRACE) System.out.println("Data received.");
+			logger.debug("Data Received");
+			if (TRACE) logger.debug("Data received.");
 			outputStream.close();
 			inputStream.close();
 
-			if (TRACE) System.out.println("File written to: " + saveFile.getAbsolutePath());
+			if (TRACE) logger.debug("File written to: " + saveFile.getAbsolutePath());
+			logger.info("File written to: " + saveFile.getAbsolutePath());
 
 			//// Thumbnailer configuration
 			/*
@@ -170,7 +181,8 @@ public class FilePersistenceFs implements ApiFilePersistence {
 			//*/
 
 		} catch (Exception e){
-			if (TRACE) System.out.println(e.toString());
+			e.printStackTrace();
+			if (TRACE) logger.debug(e.toString());
 		}
 
 		return fileUuid;
@@ -197,7 +209,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 	public boolean isFileDeleted(String fileUuid) throws IOException
 	{
 		String filePath = getPersistenceConfig().getRepoUrl() + application + File.separatorChar + fileUuid;
-		if (TRACE) System.out.println("FilePersistenceFs 233 - isFileDeleted : " + filePath);
+		if (TRACE) logger.debug("FilePersistenceFs 233 - isFileDeleted : " + filePath);
 		File file = new File(filePath);
 		if(file.exists()){
 			return false;
