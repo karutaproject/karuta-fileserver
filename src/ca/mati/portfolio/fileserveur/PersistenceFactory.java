@@ -27,10 +27,7 @@ public class PersistenceFactory {
 	}
 
 	public ApiFilePersistence createFilePersistence( String base, String path, String app ) throws IOException {
-		if ( persistenceType.equals(ApiFilePersistence.SQL_PERSISTENCE) ) {
-			return new FilePersistenceSql(base, path, app);
-		}
-		else if ( persistenceType.equals(ApiFilePersistence.FILE_SYSTEM_PERSISTENCE) ) {
+		if ( persistenceType.equals(ApiFilePersistence.FILE_SYSTEM_PERSISTENCE) ) {
 				return new FilePersistenceFs(base, path, app);
 		}
 		else {
