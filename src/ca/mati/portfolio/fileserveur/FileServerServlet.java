@@ -115,7 +115,11 @@ public class FileServerServlet extends HttpServlet
 		uuid = uuid.substring(1);
 
 		if( "".equals(uuid) )
+		{
+			request.getInputStream().close();
+			response.getWriter().close();
 			return;
+		}
 
 		String split[] = uuid.split("/");
 		uuid = split[0];
