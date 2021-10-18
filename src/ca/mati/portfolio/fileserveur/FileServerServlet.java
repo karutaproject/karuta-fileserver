@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +42,8 @@ import org.slf4j.LoggerFactory;
 // Moved to <multipart-config> in the web.xml
 public class FileServerServlet extends HttpServlet
 {
+	public static final String KARUTA_ENV_HOME = "KARUTA_HOME";
+	public static final String KARUTA_PROP_HOME = "karuta.home";
 	final Logger logger = LoggerFactory.getLogger(FileServerServlet.class);
 
 	private String serverType;
@@ -57,23 +58,43 @@ public class FileServerServlet extends HttpServlet
 	private static final int BUFFER_SIZE = 4096;
 
 	@Override
-	public void init()
-	{
+	public void init() throws ServletException {
 		logger.info("FileServerServlet starting");
 		serverType = getServletConfig().getServletContext().getInitParameter("serverType");
-		String servName = getServletConfig().getServletContext().getContextPath();
-		String path = getServletConfig().getServletContext().getRealPath("/");
-		File base = new File(path+".."+File.separatorChar+"..");
-		try
-		{
-			baseFolder = base.getCanonicalPath();
-			configPath = baseFolder + servName +"_config"+File.separatorChar;
-			logger.info("FileServerServlet configpath @ "+configPath);
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+		try {
+			this.loadConfigDirectory();
+		} catch (Exception e) {
+			logger.error("Error in initializing servlet: ", e);
+			throw new ServletException(e);
 		}
+	}
 
+	private void loadConfigDirectory() throws IOException, InternalError {
+		final String configEnvDir = System.getenv(KARUTA_ENV_HOME);
+		final String configPropDir = System.getProperty(KARUTA_PROP_HOME);
+		// The jvm property override the environment property if set
+		final String configDir = (configPropDir != null && !configPropDir.trim().isEmpty()) ? configPropDir : configEnvDir;
+		final String servName = getServletConfig().getServletContext().getContextPath();
+		if (configDir != null && !configDir.trim().isEmpty()) {
+			final File base = new File(configDir.trim());
+			if (base.exists() && base.isDirectory() && base.canWrite()) {
+				try {
+					baseFolder = base.getCanonicalPath();
+					configPath = baseFolder + servName +"_config" + File.separatorChar;
+					logger.info("FileServerServlet configpath @ " + configPath);
+				} catch (IOException e) {
+					logger.error("The Configuration directory '" + configDir + "' wasn't defined", e);
+					throw e;
+				}
+			} else {
+				throw new IllegalArgumentException("The environment variable '" + KARUTA_ENV_HOME + "' '" + configEnvDir
+						+ "' or the jvm property '" + KARUTA_PROP_HOME + "' '" + configPropDir
+						+ "' doesn't exist or isn't writable. Please provide a writable directory path !");
+			}
+		} else {
+			throw new IllegalArgumentException("The environment variable '" + KARUTA_ENV_HOME
+					+ "' or the jvm property '" + KARUTA_PROP_HOME + "' wasn't set.");
+		}
 	}
 
 	@Override
