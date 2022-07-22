@@ -74,26 +74,42 @@ public class FileServerServlet extends HttpServlet
 		final String configPropDir = System.getProperty(KARUTA_PROP_HOME);
 		// The jvm property override the environment property if set
 		final String configDir = (configPropDir != null && !configPropDir.trim().isEmpty()) ? configPropDir : configEnvDir;
-		final String servName = getServletConfig().getServletContext().getContextPath();
+		final String servletName = getServletConfig().getServletContext().getContextPath();
 		if (configDir != null && !configDir.trim().isEmpty()) {
 			final File base = new File(configDir.trim());
 			if (base.exists() && base.isDirectory() && base.canWrite()) {
-				try {
-					baseFolder = base.getCanonicalPath();
-					configPath = baseFolder + servName +"_config" + File.separatorChar;
-					logger.info("FileServerServlet configpath @ " + configPath);
-				} catch (IOException e) {
-					logger.error("The Configuration directory '" + configDir + "' wasn't defined", e);
-					throw e;
-				}
+				setConfigFolder(base, servletName);
 			} else {
 				throw new IllegalArgumentException("The environment variable '" + KARUTA_ENV_HOME + "' '" + configEnvDir
 						+ "' or the jvm property '" + KARUTA_PROP_HOME + "' '" + configPropDir
 						+ "' doesn't exist or isn't writable. Please provide a writable directory path !");
 			}
 		} else {
-			throw new IllegalArgumentException("The environment variable '" + KARUTA_ENV_HOME
-					+ "' or the jvm property '" + KARUTA_PROP_HOME + "' wasn't set.");
+			final String defaultDir = System.getProperty("catalina.base");
+			logger.warn("The environment variable '" + KARUTA_ENV_HOME
+					+ "' or the jvm property '" + KARUTA_PROP_HOME + "' wasn't set."
+					+ " Use theses variables to set a custom configuration path outside of tomcat installation."
+					+ " Fallback on default folder '" + defaultDir + "'.");
+			final File base = new File(defaultDir);
+			if (base.exists() && base.isDirectory() && base.canWrite()) {
+				setConfigFolder(base, servletName);
+			} else {
+				logger.error("The folder '" + defaultDir
+						+ "' provided from 'catalina.base' doesn't exist or isn't writable. It's required for configuration files !");
+				throw new IllegalArgumentException("The folder '" + defaultDir
+						+ "' provided from 'catalina.base' doesn't exist or isn't writable. It's required for configuration files !");
+			}
+		}
+	}
+
+	private void setConfigFolder(final File base, final String servletName) throws IOException {
+		try {
+			baseFolder = base.getCanonicalPath();
+			configPath = baseFolder + servletName + "_config" + File.separatorChar;
+			logger.info("FileServerServlet configpath @ " + configPath);
+		} catch (IOException e) {
+			logger.error("The configuration directory '" + baseFolder + "' wasn't defined", e);
+			throw e;
 		}
 	}
 
@@ -130,8 +146,8 @@ public class FileServerServlet extends HttpServlet
 	}
 
 	@Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-  {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		String uuid = request.getPathInfo();
 		uuid = uuid.substring(1);
 
@@ -142,18 +158,15 @@ public class FileServerServlet extends HttpServlet
 			return;
 		}
 
-		String split[] = uuid.split("/");
+		String[] split = uuid.split("/");
 		uuid = split[0];
 		String thumbvar=null;
 		if( split.length > 1 )
 			thumbvar = split[1];
-		boolean isThumbnail = false;
-		if("thumb".equals(thumbvar))
-		isThumbnail = true;
+		boolean isThumbnail = "thumb".equals(thumbvar);
 
 		OutputStream outStream = response.getOutputStream();
-		try
-		{
+		try {
 //			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
@@ -191,17 +204,14 @@ public class FileServerServlet extends HttpServlet
 			response.setStatus(500);
 			PrintWriter writer = new PrintWriter(outStream);
 			writer.print("500 - ERROR: " + e.getMessage());
-		}
-		finally
-		{
+		} finally {
 			outStream.close();
 			request.getInputStream().close();
 		}
 	}
 
 	@Override
-  protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-  {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException	{
 		String uuid = request.getPathInfo();
 		uuid = uuid.substring(1);
 
@@ -209,19 +219,15 @@ public class FileServerServlet extends HttpServlet
 		if( "".equals(uuid) )
 			uuid = UUID.randomUUID().toString();
 		else
-			try
-			{
+			try	{
 				UUID test = UUID.fromString(uuid);
 				uuid = test.toString();
-			}
-			catch( IllegalArgumentException e )
-			{
+			} catch( IllegalArgumentException e )	{
 				// Invalid create a new one
 				uuid = UUID.randomUUID().toString();
 			}
 
-		try
-		{
+		try {
 //			String path = getServletContext().getRealPath("/");
 			PersistenceFactory factory = new PersistenceFactory(serverType);
 			String app = request.getHeader("app");
@@ -231,15 +237,13 @@ public class FileServerServlet extends HttpServlet
 			// get input stream of the upload file
 			String doCopy = request.getParameter("copy");
 			InputStream inputStream = null;
-			if( doCopy != null )
-			{
+			if( doCopy != null ) {
 				/// Read file directly
 				inputStream = filePersistence.getFileInputStream(uuid, false);
 
 				/// Generate a new legit uuid
 				uuid = UUID.randomUUID().toString();
-			}
-			else
+			} else
 				inputStream = request.getInputStream();
 
 			logger.debug("Input stream for: "+uuid);
@@ -260,8 +264,8 @@ public class FileServerServlet extends HttpServlet
 	}
 
 	@Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-  {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		String uuid = request.getPathInfo();
 		uuid = uuid.substring(1);
 
@@ -269,13 +273,11 @@ public class FileServerServlet extends HttpServlet
 		if( "".equals(uuid) )
 			uuid = UUID.randomUUID().toString();
 		else
-			try
-			{
+			try	{
 				UUID test = UUID.fromString(uuid);
 				uuid = test.toString();
 			}
-			catch( IllegalArgumentException e )
-			{
+			catch( IllegalArgumentException e )	{
 				// Invalid create a new one
 				uuid = UUID.randomUUID().toString();
 			}
@@ -291,15 +293,13 @@ public class FileServerServlet extends HttpServlet
 			// get input stream of the upload file
 			String doCopy = request.getParameter("copy");
 			InputStream inputStream = null;
-			if( doCopy != null )
-			{
+			if ( doCopy != null ) {
 				/// Read file directly
 				inputStream = filePersistence.getFileInputStream(uuid, false);
 
 				/// Generate a new legit uuid
 				uuid = UUID.randomUUID().toString();
-			}
-			else
+			} else
 				inputStream = request.getInputStream();
 
 			logger.debug("Input stream for: "+uuid);
@@ -318,6 +318,6 @@ public class FileServerServlet extends HttpServlet
 		writer.write(uuid);
 		writer.close();
 		request.getInputStream().close();
-}
+	}
 
 }
