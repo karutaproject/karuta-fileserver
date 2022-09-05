@@ -3,34 +3,34 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
       version="3.0">
-    
+
 	<context-param>
 		<param-name>serverType</param-name>
 		<param-value>fs</param-value>
 	</context-param>
-  
+
 	<servlet>
     	<servlet-name>FileServerService</servlet-name>
-    	<servlet-class>ca.mati.portfolio.fileserveur.FileServerServlet</servlet-class>
+    	<servlet-class>com.eportfolium.karuta.fileserveur.FileServerServlet</servlet-class>
     	<load-on-startup>1</load-on-startup>
     	<multipart-config>
-			<!-- An absolute path to a directory on the file system used to store files temporarily --> 
+			<!-- An absolute path to a directory on the file system used to store files temporarily -->
 			<location>/tmp</location>
-			<!-- 100 MB - The maximum size allowed for uploaded files, in bytes --> 
+			<!-- 100 MB - The maximum size allowed for uploaded files, in bytes -->
 			<max-file-size>104857600</max-file-size>
 			<!-- 100 MB - The maximum size allowed for a multipart/form-data request, in bytes -->
 			<max-request-size>104857600</max-request-size>
 			<!-- 1 MB (1 048 576 bytes) - file size in bytes after which the file will be temporarily stored on disk -->
-			<!-- 
-			<file-size-threshold>1048576</file-size-threshold> 
+			<!--
+			<file-size-threshold>1048576</file-size-threshold>
 			-->
-		</multipart-config>	
+		</multipart-config>
   	</servlet>
 	<servlet-mapping>
     	<servlet-name>FileServerService</servlet-name>
     	<url-pattern>/*</url-pattern>
 	</servlet-mapping>
-	
+
 <!-- Filtering to allow only call from local server -->
 <!--
     <filter>
@@ -52,5 +52,5 @@
       org.apache.commons.fileupload.servlet.FileCleanerCleanup
     </listener-class>
   </listener>
-  
+
 </web-app>

@@ -1,4 +1,4 @@
-package ca.mati.portfolio.fileserveur;
+package com.eportfolium.karuta.fileserveur;
 
 /*
  * $Header: /home/cvs/jakarta-commons/httpclient/src/java/org/apache/commons/httpclient/util/Attic/Base64.java,v 1.6.2.1 2004/02/22 18:21:16 olegk Exp $
@@ -37,21 +37,21 @@ package ca.mati.portfolio.fileserveur;
 
 /**
  * Base64 encoder and decoder.
- * 
+ *
 
  * This class provides encoding/decoding methods for the Base64 encoding as
  * defined by RFC 2045, N. Freed and N. Borenstein. RFC 2045: Multipurpose
  * Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies.
- * Reference 1996. Available at: 
+ * Reference 1996. Available at:
  * http://www.ietf.org/rfc/rfc2045.txt
- * 
+ *
 
 
- * 
+ *
  * @author Jeffrey Rodriguez
  * @author Mike Bowler
  * @version $Revision: 2 $ $Date: 2009-06-12 15:50:51 -0400 (Fri, 12 Jun 2009) $
- * 
+ *
  */
 public final class Base64 {
 
@@ -169,12 +169,12 @@ public final class Base64 {
             k  = (byte) (b1 & 0x03);
 
             encodedIndex = i * 4;
-            byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2) 
+            byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2)
                 : (byte) ((b1) >> 2 ^ 0xc0);
 
-            byte val2 = ((b2 & SIGN) == 0) ? (byte) (b2 >> 4) 
+            byte val2 = ((b2 & SIGN) == 0) ? (byte) (b2 >> 4)
                 : (byte) ((b2) >> 4 ^ 0xf0);
-            byte val3 = ((b3 & SIGN) == 0) ? (byte) (b3 >> 6) 
+            byte val3 = ((b3 & SIGN) == 0) ? (byte) (b3 >> 6)
                 : (byte) ((b3) >> 6 ^ 0xfc);
 
             encodedData[encodedIndex]   = LOOKUP_BASE64_ALPHABET[val1];
@@ -191,7 +191,7 @@ public final class Base64 {
         if (fewerThan24bits == EIGHTBIT) {
             b1 = binaryData[dataIndex];
             k = (byte) (b1 & 0x03);
-            byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2) 
+            byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2)
                 : (byte) ((b1) >> 2 ^ 0xc0);
             encodedData[encodedIndex]     = LOOKUP_BASE64_ALPHABET[val1];
             encodedData[encodedIndex + 1] = LOOKUP_BASE64_ALPHABET[k << 4];
@@ -203,13 +203,13 @@ public final class Base64 {
             l = (byte) (b2 & 0x0f);
             k = (byte) (b1 & 0x03);
 
-            byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2) 
+            byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2)
                 : (byte) ((b1) >> 2 ^ 0xc0);
-            byte val2 = ((b2 & SIGN) == 0) ? (byte) (b2 >> 4) 
+            byte val2 = ((b2 & SIGN) == 0) ? (byte) (b2 >> 4)
                 : (byte) ((b2) >> 4 ^ 0xf0);
 
             encodedData[encodedIndex]     = LOOKUP_BASE64_ALPHABET[val1];
-            encodedData[encodedIndex + 1] = LOOKUP_BASE64_ALPHABET[val2 
+            encodedData[encodedIndex + 1] = LOOKUP_BASE64_ALPHABET[val2
                 | (k << 4)];
             encodedData[encodedIndex + 2] = LOOKUP_BASE64_ALPHABET[l << 2];
             encodedData[encodedIndex + 3] = PAD;
@@ -269,7 +269,7 @@ public final class Base64 {
             } else if (marker1 == PAD) {    //One PAD e.g. 3cQ[Pad]
                 b3 = BASE64_ALPHABET[marker0];
                 decodedData[encodedIndex]   = (byte) (b1 << 2 | b2 >> 4);
-                decodedData[encodedIndex + 1] = (byte) (((b2 & 0xf) << 4) 
+                decodedData[encodedIndex + 1] = (byte) (((b2 & 0xf) << 4)
                     | ((b3 >> 2) & 0xf));
             }
             encodedIndex += 3;
