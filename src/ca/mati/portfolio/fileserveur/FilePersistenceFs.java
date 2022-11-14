@@ -201,7 +201,26 @@ public class FilePersistenceFs implements ApiFilePersistence {
 	@Override
 	public String deleteFile(String fileUuid) throws Exception
 	{
-		String message = "file " + fileUuid + " not deleted";
+		String filePath = getPersistenceConfig().getRepoUrl() + application +File.separatorChar + fileUuid;
+		String message = "";
+
+		try {
+			File deleteFile = new File(filePath);
+			boolean result = false;
+			if( deleteFile.exists() )
+			{
+				result = deleteFile.delete();
+			}
+
+			message = result ? "Delete OK: " : "Delete fail: ";
+			message += filePath;
+			if (TRACE) logger.debug("Deleted file "+result+": "+filePath);
+
+		} catch (Exception e){
+			e.printStackTrace();
+			if (TRACE) logger.debug(e.toString());
+		}
+
 		return message;
 	}
 
