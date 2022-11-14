@@ -1,56 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-      version="3.0">
-    
-	<context-param>
-		<param-name>serverType</param-name>
-		<param-value>fs</param-value>
-	</context-param>
-  
-	<servlet>
-    	<servlet-name>FileServerService</servlet-name>
-    	<servlet-class>ca.mati.portfolio.fileserveur.FileServerServlet</servlet-class>
-    	<load-on-startup>1</load-on-startup>
-    	<multipart-config>
-			<!-- An absolute path to a directory on the file system used to store files temporarily --> 
-			<location>/tmp</location>
-			<!-- 100 MB - The maximum size allowed for uploaded files, in bytes --> 
-			<max-file-size>104857600</max-file-size>
-			<!-- 100 MB - The maximum size allowed for a multipart/form-data request, in bytes -->
-			<max-request-size>104857600</max-request-size>
-			<!-- 1 MB (1 048 576 bytes) - file size in bytes after which the file will be temporarily stored on disk -->
-			<!-- 
-			<file-size-threshold>1048576</file-size-threshold> 
-			-->
-		</multipart-config>	
-  	</servlet>
-	<servlet-mapping>
-    	<servlet-name>FileServerService</servlet-name>
-    	<url-pattern>/*</url-pattern>
-	</servlet-mapping>
-	
-<!-- Filtering to allow only call from local server -->
-<!--
-    <filter>
-      <filter-name>Remote Address Filter</filter-name>
-      <filter-class>org.apache.catalina.filters.RemoteAddrFilter</filter-class>
-      <init-param>
-        <param-name>allow</param-name>
-        <param-value>127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1</param-value>
-      </init-param>
-    </filter>
-    <filter-mapping>
-      <filter-name>Remote Address Filter</filter-name>
-      <url-pattern>/*</url-pattern>
-    </filter-mapping>
--->
-<!-- -->
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+  <context-param>
+    <param-name>serverType</param-name>
+    <param-value>fs</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>VersionServlet</servlet-name>
+    <servlet-class>com.eportfolium.karuta.fileserveur.VersionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VersionServlet</servlet-name>
+    <url-pattern>/rest/api/version</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>FileServerService</servlet-name>
+    <servlet-class>com.eportfolium.karuta.fileserveur.FileServerServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+    <multipart-config>
+      <!-- An absolute path to a directory on the file system used to store files temporarily -->
+      <location>/tmp</location>
+      <!-- 100 MB - The maximum size allowed for uploaded files, in bytes -->
+      <max-file-size>104857600</max-file-size>
+      <!-- 100 MB - The maximum size allowed for a multipart/form-data request, in bytes -->
+      <max-request-size>104857600</max-request-size>
+      <!-- 1 MB (1 048 576 bytes) - file size in bytes after which the file will be temporarily stored on disk -->
+      <!--
+      <file-size-threshold>1048576</file-size-threshold>
+      -->
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileServerService</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Filtering to allow only call from local server -->
+  <!--
+      <filter>
+        <filter-name>Remote Address Filter</filter-name>
+        <filter-class>org.apache.catalina.filters.RemoteAddrFilter</filter-class>
+        <init-param>
+          <param-name>allow</param-name>
+          <param-value>127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1</param-value>
+        </init-param>
+      </filter>
+      <filter-mapping>
+        <filter-name>Remote Address Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping>
+  -->
+  <!-- -->
   <listener>
     <listener-class>
       org.apache.commons.fileupload.servlet.FileCleanerCleanup
     </listener-class>
   </listener>
-  
+
 </web-app>

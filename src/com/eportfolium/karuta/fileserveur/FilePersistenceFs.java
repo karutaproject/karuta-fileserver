@@ -13,7 +13,7 @@
 	permissions and limitations under the License.
    ======================================================= */
 
-package ca.mati.portfolio.fileserveur;
+package com.eportfolium.karuta.fileserveur;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +41,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 
 	public static final boolean TRACE = false;
 //	private static ThumbnailerManager thumbnailer;
-	
+
 	static final String AUXILIARY_FILE_ID_NAME = "file_id_name.txt";
 
 	static final int BUFFER_SIZE = 4096;
@@ -70,7 +70,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		thumbnailer.registerThumbnailer(new NativeImageThumbnailer());
 		thumbnailer.registerThumbnailer(new OpenOfficeThumbnailer());
 		thumbnailer.registerThumbnailer(new PDFBoxThumbnailer());
-		
+
 		try {
 			thumbnailer.registerThumbnailer(new JODWordConverterThumbnailer());
 			thumbnailer.registerThumbnailer(new JODExcelConverterThumbnailer());
@@ -79,11 +79,11 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		} catch (IOException e) {
 			logger.error("Could not initialize JODConverter:", e);
 		}
-		
+
 		thumbnailer.setImageSize(160, 120, 0);
 	}
 	//*/
-	
+
 	@Override
 	public InputStream getFileInputStream(String fileUuid, boolean thumbnail) throws SQLException, IOException
 	{
@@ -93,15 +93,15 @@ public class FilePersistenceFs implements ApiFilePersistence {
 
 		InputStream fileInputStream = null;
 
-		
+
 		String filePath;
 		if( thumbnail )
 			filePath = getPersistenceConfig().getRepoUrl() + application + "_thumb"+ File.separatorChar + fileUuid;
 		else
 			filePath = getPersistenceConfig().getRepoUrl() + application + File.separatorChar + fileUuid;
-		
+
 		logger.debug("Fetching file @ "+filePath);
-		
+
 		File file = new File(filePath);
 		if(!file.exists()){
 			throw new IOException("File doesn't exists on server.");
@@ -138,7 +138,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 		String thumbFilename = thumbFolder + File.separatorChar + fileUuid;
 
 		logger.debug("Writing file to: "+filePath);
-		
+
 		try {
 			File saveFile = new File(filePath);
 			if( !saveFile.exists() )
@@ -146,14 +146,14 @@ public class FilePersistenceFs implements ApiFilePersistence {
 				logger.debug("Creating file: "+filePath);
 				saveFile.createNewFile();
 			}
-			
+
 			// opens an output stream for writing file
 			FileOutputStream outputStream = new FileOutputStream(saveFile);
-			
+
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead = -1;
 			if (TRACE) logger.debug("Receiving data...");
-			
+
 			logger.debug("Receiving data");
 
 			while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -173,7 +173,7 @@ public class FilePersistenceFs implements ApiFilePersistence {
 			ThumbnailerManager thumbnailer = new ThumbnailerManager();
 			prepareThumbnailer(thumbnailer);
 			thumbnailer.setThumbnailFolder(thumbFolder);
-			
+
 			//// Write thumbnail
 			File file = new File(filePath);
 			File thumbFile = new File(thumbFilename);

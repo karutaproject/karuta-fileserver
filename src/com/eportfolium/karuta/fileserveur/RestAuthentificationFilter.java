@@ -13,7 +13,7 @@
 	permissions and limitations under the License.
    ======================================================= */
 
-package ca.mati.portfolio.fileserveur;
+package com.eportfolium.karuta.fileserveur;
 
 import java.io.IOException;
 import java.util.logging.Level;
